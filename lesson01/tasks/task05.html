@@ -78,38 +78,35 @@
 					<input type="text" v-model="userName">
 				</label>
 			</div>
-			<form action="#">
-				<div>
-					<label>
-						Password:
-						<input type="password" autocomplete="" v-model="userPassword">
-					</label>
-				</div>
-				<button @click="checkUser">GO</button>
-			</form>
+			<div>
+				<label>
+					Password:
+					<input type="password" autocomplete="" v-model="userPassword">
+				</label>
+			</div>
+			<button type="submit" @click="checkUser">GO</button>
 			<div>{{message}}</div>
 		</div>
 	</div>
 	<script>
 		const { createApp } = Vue
-
+		const usersList = [
+			{ userName: 'Leo', userPassword: '1234' },
+			{ userName: 'Carl', userPassword: '5678' },
+			{ userName: 'Carl', userPassword: '9876' },
+			{ userName: 'BNA', userPassword: '5432' },
+		]
 		const app = createApp({
 			data() {
 				return {
 					userName: null,
 					userPassword: null,
 					message: null,
-					usersList: [
-						{ userName: 'Leo', userPassword: '1234' },
-						{ userName: 'Carl', userPassword: '5678' },
-						{ userName: 'Carl', userPassword: '9876' },
-						{ userName: 'BNA', userPassword: '5432' },
-					]
 				}
 			},
 			methods: {
 				checkUser() {
-					for (const user of this.usersList) {
+					for (const user of usersList) {
 						if (user.userName === this.userName && user.userPassword === this.userPassword) {
 							this.message = 'Авторизовано.'
 							break
