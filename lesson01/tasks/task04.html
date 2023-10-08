@@ -3,6 +3,7 @@
 <head>
 	<meta charset="UTF-8">
 	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
 	<title>Lesson 1 - 4th task</title>
 	<style>
 		*,
@@ -28,6 +29,8 @@
 			padding-bottom: 10px;
 		}
 
+		ol:not(:last-child),
+		p:not(:last-child),
 		li:not(:last-child) {
 			margin-bottom: 15px;
 		}
@@ -40,15 +43,10 @@
 			margin-bottom: 30px;
 		}
 
-		/* a {
-			color: inherit;
-			text-decoration: none;
-			transition: color 0.3s ease 0s;
+		input,
+		button {
+			padding: 5px;
 		}
-
-		a:hover {
-			color: #F1B4BB;
-		} */
 
 		.container {
 			max-width: 1200px;
@@ -56,11 +54,130 @@
 			padding-right: 15px;
 			margin: 0 auto;
 		}
+
+		.task-condition {
+			border-bottom: 2px solid #1F4172;
+			padding-bottom: 15px;
+			margin-bottom: 15px;
+		}
+
+		#app>div {
+			margin-bottom: 5px;
+		}
+
+		.green {
+			color: green;
+		}
+
+		.red {
+			color: red;
+		}
 	</style>
 </head>
 <body>
 	<div class="container">
-		<h1></h1>
+		<h1>Задача 4.</h1>
+		<div class="task-condition">
+			<p>Умова:</p>
+			<ol>
+				<li>Спочатку сума дорівнює 0грн. Змінити суму у гривнях можна або зарахуванням на рахунок, або зняттям.</li>
+				<li>Сума автоматично переводиться у долари та євро (фіксований курс задається у data).</li>
+				<li>можливість зарахувати суму (контролювати, щоб не була від’ємною)</li>
+				<li>можливість зняти (щоб не можна зняти більше ніж є на рахунку)</li>
+				<li>при виконанні зняття і зарахування коштів вираховувати 3% від суми (відображати кількість відсотків
+					автоматично)</li>
+			</ol>
+			<p>При зміні суми :</p>
+			<ul>
+				<li>якщо було зняття, то суму відоражати червоним</li>
+				<li>якщо було зарахування, то суму відображати зеленим</li>
+				<li>Якщо сума валюти менша за 100 то відображати червоним кольором, інакше - зеленим</li>
+			</ul>
+		</div>
+		<div id="app">
+			<div>Сума на рахунку: <span class="account">{{userMoney.toFixed(2)}} UAH.</span></div>
+			<div>
+				<label>
+					Зарахувати на рахунок
+					<input type="number" v-model="moneyToAdd">
+				</label>
+				<button @click="addMoney" id="add">Зарахувати</button>
+			</div>
+			<div>
+				<label>
+					Зняти з рахунку
+					<input type="number" v-model="moneyToWithdraw">
+				</label>
+				<button @click="withdrawMoney" id="withdraw">Зняти</button>
+			</div>
+			<div>Відсоток за обслуговування: <span>{{insertAmount}} UAH.</span></div>
+			<hr>
+			<div>Сума в доларах: <span>{{dollarSum}}</span></div>
+			<div>Сума в євро: <span></span>{{euroSum}}</div>
+		</div>
 	</div>
+	<script>
+		const { createApp } = Vue
+
+		const app = createApp({
+			data() {
+				return {
+					userMoney: 0,
+					dollarRate: 36,
+					moneyToAdd: null,
+					moneyToWithdraw: null,
+					insertAmount: 0,
+				}
+			},
+			computed: {
+				dollarSum() {
+					return (this.userMoney / this.dollarRate).toFixed(2)
+				},
+				euroSum() {
+					return (this.dollarSum * 0.94).toFixed(2)
+				},
+			},
+			methods: {
+				addMoney() {
+					if (this.moneyToAdd > 0) {
+						this.insertAmount = parseFloat(this.calculateInserts(this.moneyToAdd))
+						this.userMoney += this.moneyToAdd - this.insertAmount
+						this.moneyToAdd = 0
+						this.onMoneyAdd()
+					}
+				},
+				withdrawMoney() {
+					console.log(event.target.closest('#withdraw'))
+					const inserts = parseFloat(this.calculateInserts(this.moneyToWithdraw))
+					const total = inserts + this.moneyToWithdraw
+					if (total <= this.userMoney) {
+						this.userMoney -= total
+						this.insertAmount = inserts
+						this.moneyToWithdraw = 0
+						this.onMoneyWithdraw()
+					}
+				},
+				calculateInserts(sum) {
+					return ((3 / 100) * sum).toFixed(2)
+				},
+				onMoneyAdd() {
+					const accountContainer = document.querySelector('.account')
+					if (this.userMoney < 100) {
+						accountContainer.classList.add('red')
+						accountContainer.classList.remove('green')
+					} else {
+						accountContainer.classList.add('green')
+						accountContainer.classList.remove('red')
+					}
+				},
+				onMoneyWithdraw() {
+					const accountContainer = document.querySelector('.account')
+					accountContainer.classList.remove('green')
+					accountContainer.classList.add('red')
+				},
+			},
+		})
+		app.mount('#app')
+	</script>
 </body>
 </html>
