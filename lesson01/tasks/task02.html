@@ -3,6 +3,7 @@
 <head>
 	<meta charset="UTF-8">
 	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
 	<title>Lesson 1 - 2nd task</title>
 	<style>
 		*,
@@ -40,27 +41,104 @@
 			margin-bottom: 30px;
 		}
 
-		/* a {
-			color: inherit;
-			text-decoration: none;
-			transition: color 0.3s ease 0s;
-		}
-
-		a:hover {
-			color: #F1B4BB;
-		} */
-
 		.container {
 			max-width: 1200px;
 			padding-left: 15px;
 			padding-right: 15px;
 			margin: 0 auto;
 		}
+
+		.task-condition {
+			border-bottom: 2px solid #1F4172;
+			padding-bottom: 15px;
+			margin-bottom: 15px;
+		}
+
+		#app img {
+			max-width: 300px;
+		}
 	</style>
 </head>
 <body>
 	<div class="container">
-		<h1></h1>
+		<h1>Задача 2.</h1>
+		<div class="task-condition">
+			<p>Умова: вводиться номер місяця. Автоматично виводити рекомендований одяг (зима – пальто, літо – шорти ….). Також
+				автоматично виводити зображення з відповідним зображенням лісу (зима – ліс зі снігом, осінь – жовтий ліс, …).
+			</p>
+		</div>
+		<div id="app">
+			<div>
+				<label>
+					Введіть номер місяця
+					<input type="number" v-model="monthNumber" @change="getSeasonNumber">
+				</label>
+			</div>
+			<hr>
+			<div>
+				<div>Вам краще одягнути: <span>{{clothes}}</span></div>
+				<div><img :src="woodPicture" alt=""></div>
+			</div>
+		</div>
 	</div>
+	<script>
+		const { createApp } = Vue
+
+		const app = createApp({
+			data() {
+				return {
+					monthNumber: null,
+					seasonNumber: null,
+				}
+			},
+			methods: {
+				getSeasonNumber() {
+					if (this.monthNumber >= 1 && this.monthNumber <= 12)
+						switch (this.monthNumber) {
+							case 1: case 2: case 12: this.seasonNumber = 0
+								break
+							case 3: case 4: case 5: this.seasonNumber = 1
+								break
+							case 6: case 7: case 8: this.seasonNumber = 2
+								break
+							case 9: case 10: case 11: this.seasonNumber = 3
+								break
+						}
+					else this.seasonNumber = null
+				}
+			},
+			computed: {
+				clothes() {
+					let clothes
+					switch (this.seasonNumber) {
+						case 0: clothes = 'шубу'
+							break
+						case 1: clothes = 'куртку'
+							break
+						case 2: clothes = 'футболку'
+							break
+						case 3: clothes = 'куртку'
+							break
+					}
+					return clothes
+				},
+				woodPicture() {
+					let imgSrc
+					switch (this.seasonNumber) {
+						case 0: imgSrc = 'https://glazastik.com/wp-content/uploads/2017/12/Lis_vzymku.jpg'
+							break
+						case 1: imgSrc = 'https://life.pravda.com.ua/images/doc/5/8/58ba14c-niderlandy-1.jpg'
+							break
+						case 2: imgSrc = 'https://naurok-test.nyc3.cdn.digitaloceanspaces.com/76118/images/499161_1556519489.jpg'
+							break
+						case 3: imgSrc = 'https://i.photographers.ua/images/pictures/7643/img_4080.jpg'
+							break
+					}
+					return imgSrc
+				}
+			}
+		})
+		app.mount('#app')
+	</script>
 </body>
 </html>
