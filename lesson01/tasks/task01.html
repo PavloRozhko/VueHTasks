@@ -3,6 +3,7 @@
 <head>
 	<meta charset="UTF-8">
 	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
 	<title>Lesson 1 - 1st task</title>
 	<style>
 		*,
@@ -28,9 +29,11 @@
 			padding-bottom: 10px;
 		}
 
+		p:not(:last-child),
 		li:not(:last-child) {
 			margin-bottom: 15px;
 		}
+
 
 		h1 {
 			font-size: 32px;
@@ -56,11 +59,63 @@
 			padding-right: 15px;
 			margin: 0 auto;
 		}
+
+		.task-condition {
+			border-bottom: 2px solid #1F4172;
+			padding-bottom: 15px;
+			margin-bottom: 15px;
+		}
 	</style>
 </head>
 <body>
 	<div class="container">
-		<h1></h1>
+		<h1>Задача 1.</h1>
+		<div class="task-condition">
+			<p>Умова: вводиться кількість пасажирів. Вивести:</p>
+			<ol>
+				<li>скільки потрібно автобусів (кожен автобус на 20 місць).</li>
+				<li>скільки пляшок води (кожному пасажиру 2 пляшки).</li>
+				<li>скільки бутербродів (кожному пасажиру 3 бутерброди).</li>
+			</ol>
+		</div>
+		<div id="app">
+			<div>
+				<label>
+					Введіть кількість пасажирів
+					<input type="number" v-model.lazy="passengersNumber">
+				</label>
+			</div>
+			<hr>
+			<div>Кількість автобусів :<span>{{numberOfBuses}}</span></div>
+			<div>Кількість бутилок з водою: <span>{{numberOfBottlesWithWater}}</span></div>
+			<div>Кількість бутербродів: <span>{{numberOfSandwiches}}</span></div>
+		</div>
+		<script>
+			const { createApp } = Vue
+
+			const app = createApp({
+				data() {
+					return {
+						passengersNumber: null,
+						seatsNumberPerBus: 20,
+						waterBottlesNumberPerPerson: 2,
+						sandwichesNumberPerPerson: 3,
+					}
+				},
+				computed: {
+					numberOfBuses() {
+						return Math.ceil(this.passengersNumber / this.seatsNumberPerBus)
+					},
+					numberOfBottlesWithWater() {
+						return this.passengersNumber * this.waterBottlesNumberPerPerson
+					},
+					numberOfSandwiches() {
+						return this.passengersNumber * this.sandwichesNumberPerPerson
+					},
+				},
+			})
+			app.mount('#app')
+		</script>
 	</div>
 </body>
 </html>
