@@ -3,6 +3,7 @@
 <head>
 	<meta charset="UTF-8">
 	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
 	<title>Lesson 1 - 3rd task</title>
 	<style>
 		*,
@@ -40,27 +41,69 @@
 			margin-bottom: 30px;
 		}
 
-		/* a {
-			color: inherit;
-			text-decoration: none;
-			transition: color 0.3s ease 0s;
-		}
-
-		a:hover {
-			color: #F1B4BB;
-		} */
-
 		.container {
 			max-width: 1200px;
 			padding-left: 15px;
 			padding-right: 15px;
 			margin: 0 auto;
 		}
+
+		.task-condition {
+			border-bottom: 2px solid #1F4172;
+			padding-bottom: 15px;
+			margin-bottom: 15px;
+		}
+
+		button {
+			padding: 5px;
+		}
 	</style>
 </head>
 <body>
 	<div class="container">
-		<h1></h1>
+		<h1>Задача 3.</h1>
+		<div class="task-condition">
+			<p>Умова: задано початок та кінець діапазону. При натисканні на кнопку випадковим чином генерувати значення з
+				вказаного діапазону та відображати його.</p>
+		</div>
+		<div id="app">
+			<div>
+				<label>
+					Початок діапазону
+					<input type="number" v-model="num1">
+				</label>
+			</div>
+			<div>
+				<label>
+					Кінець діапазону
+					<input type="number" v-model="num2">
+				</label>
+			</div>
+			<button @click="getRandNum">Генерувати число</button>
+			<hr>
+			<div>
+				Випадкове число з діапазону:
+				<span>{{randomNum}}</span>
+			</div>
+		</div>
 	</div>
+	<script>
+		const { createApp } = Vue
+
+		const app = createApp({
+			data() {
+				return {
+					num1: null,
+					num2: null,
+					randomNum: null,
+				}
+			},
+			methods: {
+				getRandNum() {
+					this.randomNum = this.num1 + Math.floor(Math.random() * (this.num2 - this.num1 + 1))
+				},
+			},
+		}).mount('#app')
+	</script>
 </body>
 </html>
