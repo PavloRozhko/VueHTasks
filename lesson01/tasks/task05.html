@@ -3,6 +3,7 @@
 <head>
 	<meta charset="UTF-8">
 	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
 	<title>Lesson 1 - 5th task</title>
 	<style>
 		*,
@@ -40,15 +41,10 @@
 			margin-bottom: 30px;
 		}
 
-		/* a {
-			color: inherit;
-			text-decoration: none;
-			transition: color 0.3s ease 0s;
+		input,
+		button {
+			padding: 5px;
 		}
-
-		a:hover {
-			color: #F1B4BB;
-		} */
 
 		.container {
 			max-width: 1200px;
@@ -56,11 +52,75 @@
 			padding-right: 15px;
 			margin: 0 auto;
 		}
+
+		.task-condition {
+			border-bottom: 2px solid #1F4172;
+			padding-bottom: 15px;
+			margin-bottom: 15px;
+		}
+
+		#app>div {
+			margin-bottom: 5px;
+		}
 	</style>
 </head>
 <body>
 	<div class="container">
-		<h1></h1>
+		<h1>Задача 5.</h1>
+		<div class="task-condition">
+			<p>Умова: додаток містить масив об’єктів (логін, пароль) -- інсуючі логіни і паролі. Користувач вводить логін і
+				пароль, а програма повідомляє чи може користувач бути авторизованим (чи є він одним з масиву).</p>
+		</div>
+		<div id="app">
+			<div>
+				<label>
+					Login:
+					<input type="text" v-model="userName">
+				</label>
+			</div>
+			<form action="#">
+				<div>
+					<label>
+						Password:
+						<input type="password" autocomplete="" v-model="userPassword">
+					</label>
+				</div>
+				<button @click="checkUser">GO</button>
+			</form>
+			<div>{{message}}</div>
+		</div>
 	</div>
+	<script>
+		const { createApp } = Vue
+
+		const app = createApp({
+			data() {
+				return {
+					userName: null,
+					userPassword: null,
+					message: null,
+					usersList: [
+						{ userName: 'Leo', userPassword: '1234' },
+						{ userName: 'Carl', userPassword: '5678' },
+						{ userName: 'Carl', userPassword: '9876' },
+						{ userName: 'BNA', userPassword: '5432' },
+					]
+				}
+			},
+			methods: {
+				checkUser() {
+					for (const user of this.usersList) {
+						if (user.userName === this.userName && user.userPassword === this.userPassword) {
+							this.message = 'Авторизовано.'
+							break
+						}
+						else
+							this.message = 'Неправильне ім\'я користувача або пароль.'
+					}
+				}
+			},
+		})
+		app.mount('#app')
+	</script>
 </body>
 </html>
