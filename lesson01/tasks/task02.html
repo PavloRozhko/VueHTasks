@@ -71,18 +71,28 @@
 			<div>
 				<label>
 					Введіть номер місяця
-					<input type="number" v-model="monthNumber" @change="getSeasonNumber">
+					<input type="number" v-model.lazy="monthNumber" @change="getSeasonNumber">
 				</label>
 			</div>
 			<hr>
 			<div>
-				<div>Вам краще одягнути: <span>{{clothes}}</span></div>
+				<div>Для цієї пори року краще підійде: <span>{{clothes}}</span></div>
 				<div><img :src="woodPicture" alt=""></div>
 			</div>
 		</div>
 	</div>
 	<script>
 		const { createApp } = Vue
+
+		const clothesList = [
+			'шуба', 'куртка', 'футболка', 'куртка'
+		]
+		const seasonsImages = [
+			'https://glazastik.com/wp-content/uploads/2017/12/Lis_vzymku.jpg',
+			'https://life.pravda.com.ua/images/doc/5/8/58ba14c-niderlandy-1.jpg',
+			'https://naurok-test.nyc3.cdn.digitaloceanspaces.com/76118/images/499161_1556519489.jpg',
+			'https://i.photographers.ua/images/pictures/7643/img_4080.jpg'
+		]
 
 		const app = createApp({
 			data() {
@@ -109,33 +119,11 @@
 			},
 			computed: {
 				clothes() {
-					let clothes
-					switch (this.seasonNumber) {
-						case 0: clothes = 'шубу'
-							break
-						case 1: clothes = 'куртку'
-							break
-						case 2: clothes = 'футболку'
-							break
-						case 3: clothes = 'куртку'
-							break
-					}
-					return clothes
+					return clothesList[this.seasonNumber]
 				},
 				woodPicture() {
-					let imgSrc
-					switch (this.seasonNumber) {
-						case 0: imgSrc = 'https://glazastik.com/wp-content/uploads/2017/12/Lis_vzymku.jpg'
-							break
-						case 1: imgSrc = 'https://life.pravda.com.ua/images/doc/5/8/58ba14c-niderlandy-1.jpg'
-							break
-						case 2: imgSrc = 'https://naurok-test.nyc3.cdn.digitaloceanspaces.com/76118/images/499161_1556519489.jpg'
-							break
-						case 3: imgSrc = 'https://i.photographers.ua/images/pictures/7643/img_4080.jpg'
-							break
-					}
-					return imgSrc
-				}
+					return seasonsImages[this.seasonNumber]
+				},
 			}
 		})
 		app.mount('#app')
