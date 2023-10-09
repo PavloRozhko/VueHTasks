@@ -83,24 +83,25 @@
 		<script>
 			const { createApp } = Vue
 
+			const seatsNumberPerBus = 20
+			const waterBottlesNumberPerPerson = 2
+			const sandwichesNumberPerPerson = 3
+
 			const app = createApp({
 				data() {
 					return {
 						passengersNumber: null,
-						seatsNumberPerBus: 20,
-						waterBottlesNumberPerPerson: 2,
-						sandwichesNumberPerPerson: 3,
 					}
 				},
 				computed: {
 					numberOfBuses() {
-						return Math.ceil(this.passengersNumber / this.seatsNumberPerBus)
+						return Math.ceil(this.passengersNumber / seatsNumberPerBus)
 					},
 					numberOfBottlesWithWater() {
-						return this.passengersNumber * this.waterBottlesNumberPerPerson
+						return this.passengersNumber * waterBottlesNumberPerPerson
 					},
 					numberOfSandwiches() {
-						return this.passengersNumber * this.sandwichesNumberPerPerson
+						return this.passengersNumber * sandwichesNumberPerPerson
 					},
 				},
 			})
