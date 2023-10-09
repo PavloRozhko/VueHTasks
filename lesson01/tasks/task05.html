@@ -106,14 +106,13 @@
 			},
 			methods: {
 				checkUser() {
-					for (const user of usersList) {
-						if (user.userName === this.userName && user.userPassword === this.userPassword) {
-							this.message = 'Авторизовано.'
-							break
-						}
-						else
-							this.message = 'Неправильне ім\'я користувача або пароль.'
-					}
+					const user = usersList.some((user) => {
+						return user.userName === this.userName && user.userPassword === this.userPassword
+					})
+					if (user)
+						this.message = 'Авторизовано.'
+					else
+						this.message = 'Неправильне ім\'я користувача або пароль.'
 				}
 			},
 		})
