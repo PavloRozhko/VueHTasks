@@ -71,7 +71,7 @@
 			<div>
 				<label>
 					Введіть номер місяця
-					<input type="number" v-model.lazy="monthNumber" @change="getSeasonNumber">
+					<input type="number" v-model.lazy="monthNumber" @change="seasons">
 				</label>
 			</div>
 			<hr>
@@ -101,8 +101,30 @@
 					seasonNumber: null,
 				}
 			},
-			methods: {
-				getSeasonNumber() {
+			// methods: {
+			// 	getSeasonNumber() {
+			// 		if (this.monthNumber >= 1 && this.monthNumber <= 12)
+			// 			switch (this.monthNumber) {
+			// 				case 1: case 2: case 12: this.seasonNumber = 0
+			// 					break
+			// 				case 3: case 4: case 5: this.seasonNumber = 1
+			// 					break
+			// 				case 6: case 7: case 8: this.seasonNumber = 2
+			// 					break
+			// 				case 9: case 10: case 11: this.seasonNumber = 3
+			// 					break
+			// 			}
+			// 		else this.seasonNumber = null
+			// 	}
+			// },
+			computed: {
+				clothes() {
+					return clothesList[this.seasonNumber]
+				},
+				woodPicture() {
+					return seasonsImages[this.seasonNumber]
+				},
+				seasons() {
 					if (this.monthNumber >= 1 && this.monthNumber <= 12)
 						switch (this.monthNumber) {
 							case 1: case 2: case 12: this.seasonNumber = 0
@@ -116,14 +138,6 @@
 						}
 					else this.seasonNumber = null
 				}
-			},
-			computed: {
-				clothes() {
-					return clothesList[this.seasonNumber]
-				},
-				woodPicture() {
-					return seasonsImages[this.seasonNumber]
-				},
 			}
 		})
 		app.mount('#app')
