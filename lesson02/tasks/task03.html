@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
+	<title>Lesson 2 - 3rd task</title>
+	<style>
+		*,
+		*::before,
+		*::after {
+			box-sizing: border-box;
+			margin: 0;
+			padding: 0;
+			border: none;
+		}
+
+		body,
+		html {
+			height: 100%;
+		}
+
+		body {
+			background-color: #132043;
+			font-family: Arial, Helvetica, sans-serif;
+			font-size: 20px;
+			color: #FDF0F0;
+			padding-top: 10px;
+			padding-bottom: 10px;
+		}
+
+		p:not(:last-child),
+		li:not(:last-child) {
+			margin-bottom: 15px;
+		}
+
+
+		h1 {
+			font-size: 32px;
+			line-height: 1.2;
+			text-align: center;
+			font-weight: 600;
+			margin-bottom: 30px;
+		}
+
+		.container {
+			max-width: 1200px;
+			padding-left: 15px;
+			padding-right: 15px;
+			margin: 0 auto;
+		}
+
+		.task-condition {
+			border-bottom: 2px solid #1F4172;
+			padding-bottom: 15px;
+			margin-bottom: 15px;
+		}
+	</style>
+</head>
+<body>
+	<div class="container">
+		<h1>Задача .</h1>
+		<div class="task-condition">
+			<p>Умова: </p>
+		</div>
+		<div id="app">
+		</div>
+		<script>
+			const { createApp } = Vue
+
+			const app = createApp({
+				data() {
+					return {
+					}
+				},
+				computed: {
+				},
+			})
+			app.mount('#app')
+		</script>
+	</div>
+</body>
+</html>
