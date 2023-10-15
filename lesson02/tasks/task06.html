@@ -34,7 +34,6 @@
 			margin-bottom: 15px;
 		}
 
-
 		h1 {
 			font-size: 32px;
 			line-height: 1.2;
@@ -55,15 +54,89 @@
 			padding-bottom: 15px;
 			margin-bottom: 15px;
 		}
+
+		.order-container:not(:last-child) {
+			margin-bottom: 15px;
+		}
+
+		.dishes-container {
+			display: grid;
+			grid-template-columns: repeat(3, 1fr);
+			gap: 5px;
+		}
+
+		.waiting-container,
+		.making-container,
+		.done-container {
+			border: 1px solid #F1B4BB;
+			padding: 15px;
+		}
+
+		.title {
+			margin: 0;
+		}
+
+		.item {
+			display: flex;
+			justify-content: space-between;
+			padding: 5px;
+		}
+
+		input {
+			padding: 5px;
+		}
+
+		button {
+			cursor: pointer;
+			padding: 5px;
+		}
 	</style>
 </head>
 <body>
 	<div class="container">
-		<h1>Задача .</h1>
+		<h1>Задача 6.</h1>
 		<div class="task-condition">
-			<p>Умова: </p>
+			<p>Умова: На кухню поступають замовлення. Спочатку ми додаємо їх у список “Очікують на виконання”, якщо повар
+				береться робити — замовлення переходить у список “Виконуються”, якщо замовлення виконано — переходить у список
+				“Готові до виносу”. Якщо натиснути на “Подано” - страва зникає з таблиці.</p>
 		</div>
 		<div id="app">
+			<div class="order-container">
+				<label>
+					New dish to cook
+					<input type="text" v-model="dishToCook">
+				</label>
+				<button @click="addDish">Add dish</button>
+			</div>
+			<div class="dishes-container">
+				<div class="waiting-container">
+					<h3 class="title">Waiting to cook</h3>
+					<template v-for="(dish, index) in waitingList" :key="index">
+						<div class="item">
+							<span>{{dish}}</span>
+							<button @click="cookDish(index)">Cook</button>
+						</div>
+					</template>
+				</div>
+				<div class="making-container">
+					<h3 class="title">Cooking</h3>
+					<template v-for="(dish, index) in processingList" :key="index">
+						<div class="item">
+							<span>{{dish}}</span>
+							<button @click="cookedDish(index)">Cooked</button>
+						</div>
+					</template>
+				</div>
+				<div class="done-container">
+					<h3 class="title">Cooked</h3>
+					<template v-for="(dish, index) in completedList" :key="index">
+						<div class="item">
+							<span>{{dish}}</span>
+							<button @click="serveDish(index)">Serve</button>
+						</div>
+					</template>
+				</div>
+			</div>
 		</div>
 		<script>
 			const { createApp } = Vue
@@ -71,10 +144,31 @@
 			const app = createApp({
 				data() {
 					return {
+						dishToCook: null,
+						waitingList: [],
+						processingList: [],
+						completedList: [],
 					}
 				},
-				computed: {
-				},
+				methods: {
+					addDish() {
+						if (this.dishToCook) {
+							this.waitingList.push(this.dishToCook)
+							this.dishToCook = null
+						}
+					},
+					cookDish(index) {
+						const dish = this.waitingList.splice(index, 1).toString()
+						this.processingList.push(dish)
+					},
+					cookedDish(index) {
+						const dish = this.processingList.splice(index, 1).toString()
+						this.completedList.push(dish)
+					},
+					serveDish(index) {
+						this.completedList.splice(index, 1)
+					}
+				}
 			})
 			app.mount('#app')
 		</script>
