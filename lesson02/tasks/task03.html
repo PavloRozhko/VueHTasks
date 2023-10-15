@@ -34,7 +34,6 @@
 			margin-bottom: 15px;
 		}
 
-
 		h1 {
 			font-size: 32px;
 			line-height: 1.2;
@@ -55,26 +54,109 @@
 			padding-bottom: 15px;
 			margin-bottom: 15px;
 		}
+
+		.elements {
+			display: flex;
+		}
+
+		.element {
+			display: flex;
+			flex-direction: column;
+			align-items: center;
+			gap: 10px;
+			padding: 10px;
+			border-radius: 5px;
+			border: 2px solid #F1B4BB;
+		}
+
+		.element-img img {
+			max-width: 100px;
+		}
+
+		.wrong {
+			border-color: red;
+		}
+
+		.correct {
+			border-color: green;
+		}
+
+		.message-text {
+			font-size: 16px;
+		}
 	</style>
 </head>
 <body>
 	<div class="container">
-		<h1>Задача .</h1>
+		<h1>Задача 3.</h1>
 		<div class="task-condition">
-			<p>Умова: </p>
+			<p>Умова: Елемент тренажера англійської. Виводимо зображення елемента і слово. Користувач вводить відповідь. Якщо
+				вірно – відтворюємо фразу «Добре. Молодець!» (і додаємо зелену рамку до елемента), якщо ні - то відтворюємо
+				фразу «Невірно, спробуйте ще раз» (і додаємо червону рамку).</p>
 		</div>
 		<div id="app">
+			<div class="elements">
+				<div class="element" :class="answerColorStatus">
+					<div class="element-img">
+						<img :src="word.wordImgSrc">
+					</div>
+					<div>{{word.translationWord}}</div>
+					<div>Ваш переклад</div>
+					<input type="text" v-model="userAnswer">
+					<button @click="checkUserAnswer">Перевірити</button>
+					<div class="message-text">
+						<div v-if="correctAnswer">Добре. Молодець!</div>
+						<div v-else-if="wrongAnswer">Невірно,спробуйте ще раз!</div>
+					</div>
+				</div>
+			</div>
 		</div>
 		<script>
 			const { createApp } = Vue
 
+			const wordObject = {
+				translationWord: 'table',
+				translate: 'стіл',
+				wordImgSrc: 'https://clipart-library.com/img/1833509.png'
+			}
+
 			const app = createApp({
 				data() {
 					return {
+						userAnswer: null,
+						answerColorStatus: null,
+						correctAnswer: null,
+						wrongAnswer: null,
+						wordObject: null
 					}
 				},
 				computed: {
+					word() {
+						return wordObject
+					},
 				},
+				methods: {
+					checkUserAnswer() {
+						let answer
+						if (this.userAnswer)
+							answer = this.userAnswer.toLowerCase()
+
+						const result = answer === wordObject.translate
+						this.setBorderColor(result)
+						this.setAnswerStatus(result)
+						return result
+					},
+					setBorderColor(result) {
+						if (result)
+							this.answerColorStatus = 'correct'
+						else this.answerColorStatus = 'wrong'
+					},
+					setAnswerStatus(result) {
+						if (result)
+							this.correctAnswer = true
+						else this.wrongAnswer = true
+					},
+				}
 			})
 			app.mount('#app')
 		</script>
