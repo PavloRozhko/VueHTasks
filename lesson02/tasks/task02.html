@@ -48,6 +48,7 @@
 			padding-left: 15px;
 			padding-right: 15px;
 			margin: 0 auto;
+			height: 100%;
 		}
 
 		.task-condition {
@@ -55,15 +56,95 @@
 			padding-bottom: 15px;
 			margin-bottom: 15px;
 		}
+
+		.flight-container,
+		#app {
+			height: 100%;
+		}
+
+		.business {
+			background: url(https://upload.wikimedia.org/wikipedia/commons/thumb/4/48/Cathay_Pacific_-_A330-300_-_Business_Class_%288108289508%29.jpg/800px-Cathay_Pacific_-_A330-300_-_Business_Class_%288108289508%29.jpg) 0 0 / auto no-repeat;
+			height: 100%;
+		}
+
+		.economy {
+			background: url(https://ssec.si.edu/sites/default/files/ThinkstockPhotos-72967326.jpg) 0 0/ auto no-repeat;
+			height: 100%;
+		}
 	</style>
 </head>
 <body>
 	<div class="container">
-		<h1>Задача .</h1>
+		<h1>Задача 2.</h1>
 		<div class="task-condition">
-			<p>Умова: </p>
+			<p>Умова: з випадаючого списку вибираємо клас квитка у літаку. Якщо:</p>
+			<ol>
+				<li>бізнес - виводимо елементи для вибору газети та коньяку (якщо вибрано коньяк, то запропонувати закуску
+					(так/ні)), на фоні зображення бізнес кают</li>
+				<li>економ – виводимо елементи для вибору типу пива і чипсів, на фоні хмарки.</li>
+			</ol>
 		</div>
 		<div id="app">
+			<div>
+				<label>
+					Choose flight class
+					<select v-model="thicketClass">
+						<option value="1">Business class</option>
+						<option value="2">Economy class</option>
+					</select>
+				</label>
+			</div>
+			<div class="flight-container">
+				<template v-if="isBusiness">
+					<div :class="{'business':isBeverageChosen}">
+						<label>
+							Choose beverage
+							<select v-model="beverage">
+								<option value="Hennessy">Hennessy</option>
+								<option value="Martell">Martell</option>
+								<option value="Courvoisier">Courvoisier</option>
+							</select>
+						</label>
+						<label>
+							Choose newspaper
+							<select v-model="newspaper">
+								<option value="Financial Times">Financial Times</option>
+								<option value="The Wall Street Journal">The Wall Street Journal</option>
+								<option value="The Economist">The Economist</option>
+							</select>
+						</label>
+						<div v-if="isBeverageChosen">
+							<label>
+								Would you like a snacks?
+								<select v-model="snacks">
+									<option value="Yes">Yes</option>
+									<option value="No">No</option>
+								</select>
+							</label>
+						</div>
+					</div>
+				</template>
+				<template v-else-if="isEconomy">
+					<div class="economy">
+						<label>
+							Choose beer
+							<select v-model="beverage">
+								<option value="Stout">Stout</option>
+								<option value="Ale">Ale</option>
+								<option value="Lager">Lager</option>
+							</select>
+						</label>
+						<label>
+							Choose crisps
+							<select v-model="snacks">
+								<option value="Pringles">Pringles</option>
+								<option value="Quavers">Quavers</option>
+								<option value="Walkers">Walkers</option>
+							</select>
+						</label>
+					</div>
+				</template>
+			</div>
 		</div>
 		<script>
 			const { createApp } = Vue
@@ -71,9 +152,22 @@
 			const app = createApp({
 				data() {
 					return {
+						thicketClass: null,
+						beverage: null,
+						newspaper: null,
+						snacks: null,
 					}
 				},
 				computed: {
+					isBusiness() {
+						return this.thicketClass && this.thicketClass === '1'
+					},
+					isEconomy() {
+						return this.thicketClass && this.thicketClass === '2'
+					},
+					isBeverageChosen() {
+						return this.beverage
+					}
 				},
 			})
 			app.mount('#app')
