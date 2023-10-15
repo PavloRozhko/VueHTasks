@@ -95,87 +95,107 @@
 			</ul>
 		</div>
 		<div id="app">
-			<div>Сума на рахунку: <span class="account">{{userMoney.toFixed(2)}} UAH.</span></div>
+			<div>
+				<div>Сума на рахнку: <span :style="{color:[operationColorStatus]}">{{balanceLabel}} UAH.</span></div>
+				<div v-if="message">{{message}}</div>
+			</div>
 			<div>
 				<label>
 					Зарахувати на рахунок
-					<input type="number" v-model="moneyToAdd">
+					<input type="number" v-model="moneyToAdd" @focus="onFocus">
 				</label>
-				<button @click="addMoney" id="add">Зарахувати</button>
+				<button @click="addMoney">Зарахувати</button>
 			</div>
 			<div>
 				<label>
 					Зняти з рахунку
-					<input type="number" v-model="moneyToWithdraw">
+					<input type="number" v-model="moneyToWithdraw" @focus="onFocus">
 				</label>
-				<button @click="withdrawMoney" id="withdraw">Зняти</button>
+				<button @click="withdrawMoney">Зняти</button>
 			</div>
-			<div>Відсоток за обслуговування: <span>{{insertAmount}} UAH.</span></div>
-			<hr>
-			<div>Сума в доларах: <span>{{dollarSum}}</span></div>
-			<div>Сума в євро: <span></span>{{euroSum}}</div>
+			<div>Відсоток за обслуговування <span>{{insertAmountLabel}}</span></div>
+			<div>Сума балансу у євро <span :style="{color:[dollarStatusColor]}">{{dollarSumLabel}}.</span></div>
+			<div>Сума балансу у доларах <span :style="{color:[euroStatusColor]}">{{euroSumLabel}}.</span></div>
 		</div>
 	</div>
 	<script>
 		const { createApp } = Vue
 
+		const DOLLAR_RATE = 36
+		const EURO_RATE = 38
+		const INSERT_RATE = 3
+
 		const app = createApp({
 			data() {
 				return {
-					userMoney: 0,
-					dollarRate: 36,
+					balance: 0,
 					moneyToAdd: null,
 					moneyToWithdraw: null,
-					insertAmount: 0,
+					message: null,
+					operationColorStatus: null,
 				}
 			},
 			computed: {
+				balanceLabel() {
+					return this.balance.toFixed(2)
+				},
 				dollarSum() {
-					return (this.userMoney / this.dollarRate).toFixed(2)
+					return this.balance / DOLLAR_RATE
+				},
+				dollarSumLabel() {
+					return this.dollarSum.toFixed(2)
+				},
+				dollarStatusColor() {
+					let dollarStatus
+					if (this.dollarSum > 100) dollarStatus = 'green'
+					else dollarStatus = 'red'
+					return dollarStatus
 				},
 				euroSum() {
-					return (this.dollarSum * 0.94).toFixed(2)
+					return this.balance / EURO_RATE
 				},
+				euroSumLabel() {
+					return this.euroSum.toFixed(2)
+				},
+				euroStatusColor() {
+					let euroStatus
+					if (this.dollarSum > 100) euroStatus = 'green'
+					else euroStatus = 'red'
+					return euroStatus
+				},
+				insertAmount() {
+					let sum = (this.moneyToAdd ?? 0) + (this.moneyToWithdraw ?? 0)
+					return (INSERT_RATE / 100) * sum
+				},
+				insertAmountLabel() {
+					return this.insertAmount.toFixed(2)
+				},
+
 			},
 			methods: {
 				addMoney() {
-					if (this.moneyToAdd > 0) {
-						this.insertAmount = parseFloat(this.calculateInserts(this.moneyToAdd))
-						this.userMoney += this.moneyToAdd - this.insertAmount
-						this.moneyToAdd = 0
-						this.onMoneyAdd()
+					if (this.moneyToAdd < 0) {
+						this.message = 'Сума не може бути меншою за 0'
+						return
 					}
+					this.balance += this.moneyToAdd - this.insertAmount
+					this.operationColorStatus = 'green'
+					this.moneyToAdd = null
 				},
 				withdrawMoney() {
-					console.log(event.target.closest('#withdraw'))
-					const inserts = parseFloat(this.calculateInserts(this.moneyToWithdraw))
-					const total = inserts + this.moneyToWithdraw
-					if (total <= this.userMoney) {
-						this.userMoney -= total
-						this.insertAmount = inserts
-						this.moneyToWithdraw = 0
-						this.onMoneyWithdraw()
+					const amountToWithdraw = this.moneyToWithdraw + this.insertAmount
+					if (this.balance < amountToWithdraw) {
+						this.message = 'На балансі недостатньо коштів для зняття'
+						return
 					}
+					this.balance -= amountToWithdraw
+					this.operationColorStatus = 'red'
+					this.moneyToWithdraw = null
 				},
-				calculateInserts(sum) {
-					return ((3 / 100) * sum).toFixed(2)
+				onFocus() {
+					this.message = null
 				},
-				onMoneyAdd() {
-					const accountContainer = document.querySelector('.account')
-					if (this.userMoney < 100) {
-						accountContainer.classList.add('red')
-						accountContainer.classList.remove('green')
-					} else {
-						accountContainer.classList.add('green')
-						accountContainer.classList.remove('red')
-					}
-				},
-				onMoneyWithdraw() {
-					const accountContainer = document.querySelector('.account')
-					accountContainer.classList.remove('green')
-					accountContainer.classList.add('red')
-				},
-			},
+			}
 		})
 		app.mount('#app')
 	</script>
