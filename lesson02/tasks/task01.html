@@ -59,22 +59,67 @@
 </head>
 <body>
 	<div class="container">
-		<h1>Задача .</h1>
+		<h1>Задача 1.</h1>
 		<div class="task-condition">
-			<p>Умова: </p>
+			<p>Умова: Вводимо логін і пароль. Якщо логін вірний відображаємо смайл. Якщо ні, то:</p>
+			<ol>
+				<li>якщо логін = Іван – колір повідомлення про помилку синій</li>
+				<li>якщо хтось інший, то колір повідомлення червоний</li>
+			</ol>
 		</div>
 		<div id="app">
+			<div>
+				<label>
+					User name :
+					<input type="text" v-model="userName" @focus="onFocus">
+				</label>
+				<label>
+					Password :
+					<input type="password" v-model="userPassword" @focus="onFocus">
+				</label>
+			</div>
+			<button @click="checkUser">Login</button>
+			<div>
+				<div v-if="validData">🥳</div>
+				<div v-else-if="error" :style="{color:[textColor]}">Wrong login or password</div>
+			</div>
 		</div>
 		<script>
 			const { createApp } = Vue
 
+			const usersList = [
+				{ userName: 'Petro', userPassword: '2222' },
+				{ userName: 'Olha', userPassword: '3333' },
+				{ userName: 'Oksana', userPassword: '4444' },
+				{ userName: 'Ivan', userPassword: '1111' },
+			]
+
 			const app = createApp({
 				data() {
 					return {
+						userName: null,
+						userPassword: null,
+						validData: false,
+						error: false,
 					}
 				},
 				computed: {
+					textColor() {
+						return this.userName === 'Ivan' ? 'blue' : 'red'
+					},
 				},
+				methods: {
+					checkUser() {
+						const userData = usersList.some((user) => {
+							return user.userName === this.userName && user.userPassword === this.userPassword
+						})
+						if (userData) this.validData = true
+						else this.error = true
+					},
+					onFocus() {
+						this.error = false
+					}
+				}
 			})
 			app.mount('#app')
 		</script>
