@@ -29,6 +29,11 @@
 			padding-bottom: 10px;
 		}
 
+		a {
+			text-decoration: none;
+			color: inherit;
+		}
+
 		p:not(:last-child),
 		li:not(:last-child) {
 			margin-bottom: 15px;
@@ -55,25 +60,162 @@
 			padding-bottom: 15px;
 			margin-bottom: 15px;
 		}
+
+		.item:not(:last-child) {
+			margin-bottom: 30px;
+		}
+
+		.item-header:not(:last-child) {
+			margin-bottom: 5px;
+		}
+
+		.item-label {
+			display: flex;
+			align-items: center;
+			gap: 10px;
+		}
+
+		.item-label:not(:last-child) {
+			margin-bottom: 5px;
+		}
+
+		.item-img {
+			position: relative;
+		}
+
+		.item-img::after {
+			content: '';
+			position: absolute;
+			display: block;
+			width: 30px;
+			height: 30px;
+			top: 0;
+			left: 0;
+			background-color: #F1B4BB;
+			border-radius: 50%;
+		}
+
+		.item-img img {
+			max-width: 30px;
+			position: relative;
+			z-index: 5;
+		}
+
+		.item-info {
+			display: flex;
+			flex-direction: column;
+			gap: 5px;
+		}
+
+		.info-label {
+			font-size: 14px;
+			color: #c5beb7;
+		}
+
+		.info-link {
+			font-size: 12px;
+			color: #adb1b5;
+		}
+
+		.item-title {
+			font-size: 18px;
+		}
+
+		.item-title:not(:last-child) {
+			margin-bottom: 10px;
+		}
+
+		.item-title a {
+			color: #8ab4f8;
+		}
+
+		.item-title a:hover {
+			text-decoration: underline;
+		}
+
+		.item-text {
+			color: #989ca0;
+			font-size: 12px;
+		}
 	</style>
 </head>
 <body>
 	<div class="container">
-		<h1>Задача .</h1>
+		<h1>Задача 5.</h1>
 		<div class="task-condition">
-			<p>Умова: </p>
+			<p>Умова: Самостійно сформуйте масив даних та виведіть фрагмент на зразок поданого (дані не обов’язково повинні
+				співпадати).</p>
 		</div>
 		<div id="app">
+			<template v-for="(result, id) in results" :key="id">
+				<div class="item">
+					<div class="item-header">
+						<div class="item-label">
+							<a class="item-img" href="#">
+								<img :src="result.iconSrc">
+							</a>
+							<a class="item-info" href="#">
+								<span class="info-label">{{result.website}}</span>
+								<span class="info-link">{{result.URL}}</span>
+							</a>
+						</div>
+						<h2 class="item-title"><a href="#">{{result.result}}</a></h2>
+					</div>
+					<div class="item-text">{{result.description}}</div>
+				</div>
+			</template>
 		</div>
 		<script>
 			const { createApp } = Vue
 
-			const app = createApp({
-				data() {
-					return {
-					}
+			const resultsList = [
+				{
+					iconSrc: 'https://cdn-icons-png.flaticon.com/128/7361/7361736.png',
+					website: 'Lorem',
+					URL: 'https://lorem.com',
+					result: 'Lorem, ipsum dolor',
+					description: 'Lorem ipsum dolor sit, amet consectetur adipisicing elit. Commodi quibusdam ducimus, quisquam aliquid molestias doloremque doloribus assumenda aut consequatur obcaecati enim deleniti exercitationem, repellendus perferendis corporis? Ducimus fugiat voluptas adipisci?',
+					id: 1,
 				},
+				{
+					iconSrc: 'https://cdn-icons-png.flaticon.com/128/7224/7224186.png',
+					website: 'Ipsum',
+					URL: 'https://ipsum.com',
+					result: 'Lorem ipsum dolor sit',
+					description: 'Lorem ipsum dolor sit amet consectetur, adipisicing elit. Possimus eum officia alias, tempore deleniti voluptate id dicta quidem praesentium eligendi. Corporis modi recusandae earum corrupti provident numquam iure facere fugit?',
+					id: 2,
+				},
+				{
+					iconSrc: 'https://cdn-icons-png.flaticon.com/128/7130/7130843.png',
+					website: 'Dolor',
+					URL: 'https://dolor.com',
+					result: 'Lorem ipsum dolor sit amet, consectetur adipisicing',
+					description: 'Lorem ipsum dolor sit amet consectetur adipisicing elit. Repellendus provident quaerat ullam tenetur obcaecati fugit natus impedit vitae, adipisci culpa et eos tempore tempora sed doloribus distinctio porro quis quasi.',
+					id: 3,
+				},
+				{
+					iconSrc: 'https://cdn-icons-png.flaticon.com/128/299/299540.png',
+					website: 'Minima',
+					URL: 'https://minima.com',
+					result: 'Lorem ipsum dolor sit amet',
+					description: 'Lorem ipsum dolor sit, amet consectetur adipisicing elit. Labore esse provident soluta earum. Atque molestiae, reiciendis suscipit quibusdam eum minus enim consequuntur facere quidem magnam odit tempora ab inventore fugit.',
+					id: 4,
+				},
+				{
+					iconSrc: 'https://cdn-icons-png.flaticon.com/128/7224/7224171.png',
+					website: 'Culpa',
+					URL: 'https://culpa.com',
+					result: 'Lorem, ipsum',
+					description: 'Lorem ipsum dolor sit amet consectetur adipisicing elit. Optio hic officia dolorum. Cumque quia a distinctio porro ab expedita quae temporibus ad, excepturi cum, similique, omnis magnam dolorum voluptas blanditiis.',
+					id: 5,
+				},
+			]
+
+			const app = createApp({
 				computed: {
+					results() {
+						return resultsList
+					}
 				},
 			})
 			app.mount('#app')
