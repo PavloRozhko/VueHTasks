@@ -55,28 +55,162 @@
 			padding-bottom: 15px;
 			margin-bottom: 15px;
 		}
+
+		/* ------------ */
+		h2 {
+			text-align: center;
+		}
+
+		.search-form {
+			margin-top: 10px;
+		}
+
+		.search-form {
+			display: flex;
+			justify-content: center;
+			align-items: center;
+			gap: 25px;
+			margin-bottom: 15px;
+			border: 2px solid #FDF0F0;
+			padding: 25px 10px;
+		}
+
+		.reset-btn {
+			background-color: #FDF0F0;
+			color: #132043;
+			font-size: inherit;
+			cursor: pointer;
+			padding: 5px;
+			font-size: 14px;
+		}
+
+		.cars-list {
+			border: 2px solid #FDF0F0;
+			padding: 10px;
+			text-align: center;
+		}
+
+		.car-item {
+			display: flex;
+			justify-content: center;
+			align-items: center;
+			gap: 25px;
+		}
+
+		.car-item:not(:last-child) {
+			margin-bottom: 10px;
+		}
 	</style>
 </head>
 <body>
 	<div class="container">
-		<h1>Задача .</h1>
+		<h1>Задача 8.</h1>
 		<div class="task-condition">
-			<p>Умова: </p>
+			<p>Умова. Дано список автомобілів (марка, рік випуску, ціна). Сформувати елементи для фільтрування з використанням
+				випадаючого списку (контент цих випадаючих списків сформувати у залежності від переданого списку).</p>
 		</div>
 		<div id="app">
+			<div>
+				<h2>Фільтр пошуку</h2>
+				<div class="search-form">
+					<div class="select-wrapper">
+						<label>
+							Марка
+						</label>
+						<select v-model="chosenModel">
+							<option v-for="(model, index) in modelsList" :key="index" :value="model">{{model}}</option>
+						</select>
+					</div>
+					<div class="select-wrapper">
+						<label>
+							Рік випуску
+							<select v-model="chosenYear">
+								<option v-for="(year, index) in productionYearsList" :key="index" :value="year">{{year}}</option>
+							</select>
+						</label>
+					</div>
+					<div class="btn-wrapper">
+						<button class="reset-btn" @click="onReset">Скинути фільтри</button>
+					</div>
+				</div>
+				<div class="cars-list">
+					<div class="car-item" v-for="car in filteredCarsList" :key="car.id">
+						<span>{{car.model}}</span>
+						<span>{{car.year}} р.</span>
+						<span>{{car.price}}$</span>
+					</div>
+				</div>
+			</div>
 		</div>
 		<script>
 			const { createApp } = Vue
 
+			const cars = [
+				{ model: 'Opel', year: 1999, price: 1500, id: 0, },
+				{ model: 'Opel', year: 2010, price: 2500, id: 1, },
+				{ model: 'Nissan', year: 2015, price: 12500, id: 2, },
+				{ model: 'Toyota', year: 2012, price: 9000, id: 3, },
+				{ model: 'Mercedes', year: 2010, price: 12000, id: 4, },
+				{ model: 'Toyota', year: 2020, price: 30000, id: 5, },
+				{ model: 'Mercedes', year: 2020, price: 60000, id: 6, },
+				{ model: 'Toyota', year: 2022, price: 42000, id: 7, },
+				{ model: 'Opel', year: 2019, price: 20300, id: 8, },
+				{ model: 'Nissan', year: 1992, price: 500, id: 9, },
+				{ model: 'Infinity', year: 2014, price: 15000, id: 10, },
+				{ model: 'Toyota', year: 2007, price: 4000, id: 11, },
+				{ model: 'Mercedes', year: 2000, price: 2500, id: 12, },
+				{ model: 'Mazda', year: 2015, price: 15700, id: 13, },
+			]
+
 			const app = createApp({
 				data() {
 					return {
+						chosenModel: null,
+						chosenYear: null,
 					}
 				},
 				computed: {
+					modelsList() {
+						let models = []
+						for (const car of this.carsList) {
+							if (!models.includes(car.model))
+								models.push(car.model)
+						}
+						return models.sort()
+					},
+					productionYearsList() {
+						let years = []
+						for (const car of this.carsList) {
+							if (!years.includes(car.year))
+								years.push(car.year)
+						}
+						return years.sort((a, b) => a - b)
+					},
+					carsList() {
+						return cars
+					},
+					filteredCarsList() {
+						if (!this.chosenModel && !this.chosenYear) return this.carsList
+						if (this.chosenModel && !this.chosenYear) return this.filteredByModel
+						if (!this.chosenModel && this.chosenYear) return this.filteredByYears
+						if (this.chosenYear && this.chosenYear) return this.filteredByCarAndYears
+					},
+					filteredByModel() {
+						return this.carsList.filter(car => car.model === this.chosenModel)
+					},
+					filteredByYears() {
+						return this.carsList.filter(car => car.year === this.chosenYear)
+					},
+					filteredByCarAndYears() {
+						return this.carsList.filter(car => car.model === this.chosenModel && car.year === this.chosenYear)
+					}
 				},
 				methods: {
-				}
+					onReset() {
+						this.chosenModel = null
+						this.chosenYear = null
+					}
+				},
 			})
 			app.mount('#app')
 		</script>
