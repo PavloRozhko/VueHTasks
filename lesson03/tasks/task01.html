@@ -34,6 +34,9 @@
 			margin-bottom: 15px;
 		}
 
+		li {
+			list-style: none;
+		}
 
 		h1 {
 			font-size: 32px;
@@ -55,15 +58,136 @@
 			padding-bottom: 15px;
 			margin-bottom: 15px;
 		}
+
+		/* ------------------ */
+		.dancers__container {
+			display: flex;
+			justify-content: center;
+			gap: 20px;
+			justify-content: space-evenly;
+			margin-bottom: 15px;
+		}
+
+		.dancers__list {
+			flex: 0 0 50%;
+			text-align: center;
+		}
+
+		.dancers__list h2 {
+			margin-bottom: 15px;
+		}
+
+		.girls__list li:not(:last-child),
+		.boys__list li:not(:last-child) {
+			margin-bottom: 15px;
+		}
+
+		.girls__list,
+		.boys__list {
+			border: 1px solid #FDF0F0;
+			padding: 10px;
+		}
+
+		.girls__list li,
+		.boys__list li {
+			cursor: pointer;
+			padding: 5px;
+		}
+
+		.dancers__action {
+			text-align: center;
+		}
+
+		.selected {
+			border: 1px solid #F1B4BB;
+			border-radius: 5px;
+		}
+
+		.add-btn {
+			font-size: 20px;
+			color: #1F4172;
+			padding: 15px 25px;
+			border-radius: 5px;
+			background-color: #FDF0F0;
+			transition: background-color 0.3s ease 0s;
+			cursor: pointer;
+		}
+
+		.add-btn:disabled {
+			background-color: #F1B4BB;
+		}
+
+		.add-btn:hover {
+			background-color: #F1B4BB;
+		}
+
+		.chosen-pair {
+			border: 1px solid #FDF0F0;
+			padding: 10px;
+			margin-top: 15px;
+		}
+
+		.pair {
+			display: flex;
+			justify-content: center;
+			align-items: center;
+			gap: 25px;
+		}
+
+		.pair:not(:last-child) {
+			margin-bottom: 15px;
+		}
+
+		.delete-dtn {
+			width: 30px;
+			height: 30px;
+			color: red;
+			font-weight: 900;
+			border-radius: 50%;
+			border: 1px solid #FDF0F0;
+			background-color: transparent;
+			cursor: pointer;
+		}
 	</style>
 </head>
 <body>
 	<div class="container">
-		<h1>Задача .</h1>
+		<h1>Задача 6.</h1>
 		<div class="task-condition">
-			<p>Умова: </p>
+			<p>Умова: Пари для танців. Поступово вибираємо хлопця, дівчину і додаємо у обрані пари. Пару можна видалити. Поки
+				не вибрано хлопця і дівчину кнопка «Додати» заблокована. Якщо не вистачає хлопців або дівчат вибір також
+				блокується.</p>
 		</div>
 		<div id="app">
+			<div class="dancers">
+				<div class="dancers__container">
+					<div class="dancers__list boys">
+						<h2>Хлопці</h2>
+						<ul class="boys__list">
+							<li v-for="(boy, index) in boysList" :key="boy.id" :class="{'selected':boy.isSelected}"
+								@click="onClick(boy)">
+								{{boy.name}}</li>
+						</ul>
+					</div>
+					<div class="dancers__list girls">
+						<h2>Дівчата</h2>
+						<ul class="girls__list">
+							<li v-for="(girl, index) in girlsList" :key="girl.id" :class="{'selected':girl.isSelected}"
+								@click="onClick(girl)">
+								{{girl.name}}</li>
+						</ul>
+					</div>
+				</div>
+				<div class="dancers__action">
+					<button class="add-btn" @click="onPairAdd()" :disabled="isDisable">Додати</button>
+				</div>
+			</div>
+			<div class="pairs__container" :class="{'chosen-pair': isPairAdd}">
+				<div class="pair" v-for="pair in dancePairsList" :key="pair.id">
+					<span>{{pair.boy}}</span> <span>{{pair.girl}}</span><button class="delete-dtn"
+						@click="onPairDelete(pair)">X</button>
+				</div>
+			</div>
 		</div>
 		<script>
 			const { createApp } = Vue
@@ -71,11 +195,85 @@
 			const app = createApp({
 				data() {
 					return {
+						girlsList: [
+							{ name: 'Аліна', id: '1', isSelected: false },
+							{ name: 'Ольга', id: '2', isSelected: false },
+							{ name: 'Параска', id: '3', isSelected: false },
+							{ name: 'Тетяна', id: '4', isSelected: false },
+							{ name: 'Павліна', id: '5', isSelected: false },
+						],
+						boysList: [
+							{ name: 'Антон', id: '1', isSelected: false },
+							{ name: 'Петро', id: '2', isSelected: false },
+							{ name: 'Захар', id: '3', isSelected: false },
+							{ name: 'Сандро', id: '4', isSelected: false },
+							{ name: 'Микола', id: '5', isSelected: false },
+							{ name: 'Прокіп', id: '6', isSelected: false },
+						],
+						selectedBoy: false,
+						selectedGirl: false,
+						dancePairsList: [],
 					}
 				},
 				computed: {
+					isDisable() {
+						return !this.isPairSelected && !this.isListEmpty
+					},
+					isPairSelected() {
+						return this.selectedBoy && this.selectedGirl
+					},
+					isListEmpty() {
+						return this.boysList.length === 0 && this.girlsList.length === 0
+					},
+					isPairAdd() {
+						return this.dancePairsList.length !== 0
+					}
 				},
 				methods: {
+					onClick(dancer) {
+						const gender = this.checkGender(dancer)
+
+						if (gender === 'male') {
+							dancer.isSelected = true
+							this.boysList.forEach((boy) => {
+								if (boy.id !== dancer.id) boy.isSelected = false
+							})
+							this.selectedBoy = dancer
+						} else {
+							dancer.isSelected = true
+							this.girlsList.forEach((girl) => {
+								if (girl.id !== dancer.id) girl.isSelected = false
+							})
+							this.selectedGirl = dancer
+						}
+					},
+					checkGender(dancer) {
+						let gender
+						if (this.boysList.includes(dancer))
+							gender = 'male'
+						else gender = 'female'
+						return gender
+					},
+					formDancersPair() {
+						const dancePair = {
+							boy: this.selectedBoy.name,
+							girl: this.selectedGirl.name,
+							id: Date.now()
+						}
+						this.dancePairsList.push(dancePair)
+					},
+					onPairAdd() {
+						this.formDancersPair()
+
+						this.girlsList = this.girlsList.filter(girl => girl.id !== this.selectedGirl.id)
+						this.boysList = this.boysList.filter(boy => boy.id !== this.selectedBoy.id)
+
+						this.selectedBoy = false
+						this.selectedGirl = false
+					},
+					onPairDelete(pairToDelete) {
+						this.dancePairsList = this.dancePairsList.filter(pair => pair.id !== pairToDelete.id)
+					}
 				}
 			})
 			app.mount('#app')
